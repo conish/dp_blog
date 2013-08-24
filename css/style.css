@@ -1,0 +1,73 @@
+/* 
+    Document   : style
+    Created on : 2013-08-24, 12:30:18
+    Author     : Asia i conish
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+body {
+    padding: 0px;
+    margin: 0px;
+}
+.post_wrapper {
+    margin: 5px 0 0 20px;
+    border-bottom: #D0D0D0 solid 1px;
+}
+
+.post_body {
+    margin: 0 0 5px 0;
+}
+.posts_wrapper {
+    width: 60%;
+}
+.post_info {
+    margin: 0 0 3px 0;
+    color: #4F5155;
+    font-size: smaller;
+}
+nav {
+    position: fixed;
+    top: 110px;
+    right: 50px;
+}
+header {
+    height: 100px;
+    background-image: url("/img/header.png");
+}
+h1 {
+    display: inline;
+    margin: 0;
+}
+.header_wrapper {
+    padding: 10px 0 0 25%;
+}
+h1>a, h1>a:hover{
+   color: #002166;
+   text-decoration: none;
+}
+a {
+    color: #4F5155;
+    text-decoration: none;
+}
+a:hover {
+    color: #D0D0D0;
+}
+.komentarze_wrapper {
+    margin-left: 10%;
+}
+textarea {
+    width: 40%;
+    margin-bottom: 10px;    
+}
+label {
+    margin-right: 10px;
+}
+
+.form_row {
+    margin-bottom: 5px;
+}
