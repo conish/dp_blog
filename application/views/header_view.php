@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>DEV<?=$title;?></title>
+        <title><?=$title;?></title>
         <link href="<?=base_url();?>css/style.css" rel="stylesheet" type="text/css" media="screen" />
     </head>
     <body>
