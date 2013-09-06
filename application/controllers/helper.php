@@ -76,7 +76,7 @@ Donec tincidunt semper porta. Pellentesque pulvinar erat id tellus bibendum fauc
             $data_dodania = date("Y-m-d G:i:s", $dzis-($i*$jeden_dzien_mniej));
             //echo $data_dodania."<br />";
             $this->post_model->dodaj_post($tytul, $tresc, $autor, $data_dodania, $lead);
-            $this->post_model->publikuj_post($this->db->insert_id());
+            //$this->post_model->publikuj_post($this->db->insert_id());
         }
     }
 }

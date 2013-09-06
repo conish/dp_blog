@@ -40,6 +40,8 @@
 
 $route['default_controller'] = "blog";
 $route['404_override'] = '';
+
+
 $route['(:any)~(:num).html'] = 'post/index/$2';
 $route['blog/strona/(:num)'] = 'blog/index/$1';
 $route['blog/strona'] = 'blog/index/';

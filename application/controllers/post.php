@@ -69,6 +69,7 @@ class post extends CI_Controller
         $data['posty'] = $this->post_model->pobierz_post($id);
         $data['komentarze'] = $this->komentarze_model->pobirze_komentarze($id);
         $data['title'] = $data['posty'][0]->tytul;
+        
         $this->load->view('header_view', $data);
         $this->load->view('post_view', $data);
     }
