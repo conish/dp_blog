@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
-* Description of blog
+* Description of login
 * @property CI_DB_active_record $db
 * @property CI_DB_forge $dbforge
 * @property CI_Benchmark $benchmark
@@ -42,55 +42,35 @@
 * @property CI_Zip $zip
 * @property Image_Upload $image_upload
 * @property Lang_Detect $lang_detect
- * @property web_model $web_model
- * @property post_model $post_model
- * @property paginacja_model $paginacja_model Description
-
+* @property login_model $login_model Description
 ********* MODELS *********
 * @property User_model $user_model
 * 
  * @author Konrad Kosowski
  */
-class blog extends CI_Controller 
+class login extends CI_Controller 
 {
     
-    public function index($id = NULL)
+    public function index()
     {
-        
-        $data = $this->show_top($id);
-        $data['posty'] = $this->post_model->pobierz_posty($id, $data['konfiguracja']['show_per_page']);
-        $this->load->view('blog_view', $data);
-    }
-    
-    
-    public function show_top($id)
-    {
-        $this->load->model('web_model', '', TRUE);
-        $this->load->model('post_model', '', TRUE);
-        $this->load->model('paginacja_model', '', TRUE);
-        $data['konfiguracja'] = $this->web_model->pobierz_konfiguracje();
-        $data['title'] = $data['konfiguracja']['header'];
-        $data['konfiguracja']['paginacja'] = $this->paginacja_model->przygotuj_linki();
-        if($this->session->userdata('username'))
+        $this->load->model('login_model', '', TRUE);
+        $username = $this->input->post('login');
+        $password = $this->input->post('pass');
+        $auth = $this->login_model->auth($username, $password);
+        if($auth)
         {
-            $data['is_logged'] = TRUE;
-            $data['name'] = $this->session->userdata('username');
-            $data['level'] = $this->session->userdata('level');
+            $config = array('username' => $auth->login, 'level' => $auth->level);
+            $this->load->library('session_setter', $config);
+            $output = array('status' => 'ok');
         }
         else
         {
-            $data['name'] = 'nieznajomy';
-            $data['is_logged'] = FALSE;
+            $output = array('status' => 'fail', 'message' => 'Błędny login lub hasło!');
         }
-        
-        
-        $this->load->view('head_view', $data);
-        $this->load->view('log_tab_view', $data);
-        $this->load->view('login_dialog');
-        $this->load->view('register_dialog');
-        $this->load->view('header_view', $data);
-        return $data;
+        $output = json_encode($output);
+        $this->output->set_content_type('application/json')->set_output($output);
     }
+    
 }
-/* End of file blog.php */
-/* Location: ./application/controllers/blog.php */
+/* End of file login.php */
+/* Location: ./application/controllers/login.php */

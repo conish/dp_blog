@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
-* Description of blog
+* Description of me
 * @property CI_DB_active_record $db
 * @property CI_DB_forge $dbforge
 * @property CI_Benchmark $benchmark
@@ -42,55 +42,34 @@
 * @property CI_Zip $zip
 * @property Image_Upload $image_upload
 * @property Lang_Detect $lang_detect
- * @property web_model $web_model
- * @property post_model $post_model
- * @property paginacja_model $paginacja_model Description
 
 ********* MODELS *********
 * @property User_model $user_model
 * 
  * @author Konrad Kosowski
  */
-class blog extends CI_Controller 
+class me extends CI_Controller 
 {
-    
-    public function index($id = NULL)
+    public function __construct() 
     {
-        
-        $data = $this->show_top($id);
-        $data['posty'] = $this->post_model->pobierz_posty($id, $data['konfiguracja']['show_per_page']);
-        $this->load->view('blog_view', $data);
+        parent::__construct();
+        if(!$this->session->userdata('username'))
+        {
+            header("Location: ".base_url());
+        }
     }
     
-    
-    public function show_top($id)
+    public function index()
     {
-        $this->load->model('web_model', '', TRUE);
-        $this->load->model('post_model', '', TRUE);
-        $this->load->model('paginacja_model', '', TRUE);
-        $data['konfiguracja'] = $this->web_model->pobierz_konfiguracje();
-        $data['title'] = $data['konfiguracja']['header'];
-        $data['konfiguracja']['paginacja'] = $this->paginacja_model->przygotuj_linki();
-        if($this->session->userdata('username'))
-        {
-            $data['is_logged'] = TRUE;
-            $data['name'] = $this->session->userdata('username');
-            $data['level'] = $this->session->userdata('level');
-        }
-        else
-        {
-            $data['name'] = 'nieznajomy';
-            $data['is_logged'] = FALSE;
-        }
         
+        $this->load->model('me_model', '', TRUE);
         
-        $this->load->view('head_view', $data);
-        $this->load->view('log_tab_view', $data);
-        $this->load->view('login_dialog');
-        $this->load->view('register_dialog');
-        $this->load->view('header_view', $data);
-        return $data;
+        require_once(APPPATH . "controllers/blog.php");
+        $data = blog::show_top(NULL);
+        $data['user'] = $this->me_model->get_user();
+        $this->load->view('me_view', $data);
     }
+    
 }
-/* End of file blog.php */
-/* Location: ./application/controllers/blog.php */
+/* End of file me.php */
+/* Location: ./application/controllers/me.php */

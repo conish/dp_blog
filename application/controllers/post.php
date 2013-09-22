@@ -64,12 +64,15 @@ class post extends CI_Controller
         {
             $this->post_akcja($id);
         }
-        
+        require_once(APPPATH . "controllers/blog.php");
+        $data = blog::show_top($id);
         $data['konfiguracja'] = $this->web_model->pobierz_konfiguracje();
         $data['posty'] = $this->post_model->pobierz_post($id);
         $data['komentarze'] = $this->komentarze_model->pobirze_komentarze($id);
         $data['title'] = $data['posty'][0]->tytul;
-        $this->load->view('header_view', $data);
+        $data['name'] = 'nieznajomy';
+        $data['is_logged'] = TRUE;
+        
         $this->load->view('post_view', $data);
     }
     

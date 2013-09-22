@@ -78,9 +78,25 @@ class post_model extends CI_Model
         }
         return FALSE;
     }
+    public function pobierz_wszystkie_posty()
+    {
+        $this->db->select('id, tytul, status, autor, data_dodania, data_publikacji, lead, post_url');
+        $this->db->from('posty');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            foreach($query->result() as $result)
+            {
+                $row[] = $result;
+            }
+            return $row;
+        }
+        return FALSE;
+    }
+        
     public function pobierz_post($id)
     {
-        $this->db->select('id, tytul, status, autor, data_dodania, data_publikacji, tresc, post_url');
+        $this->db->select('id, tytul, status, autor, data_dodania, data_publikacji, tresc, post_url, lead');
         $this->db->from('posty');
         $this->db->where('status', 'public');
         $this->db->where('usuniety', 0);
@@ -95,6 +111,33 @@ class post_model extends CI_Model
             return $row;
         }
         return FALSE;
+    }
+    public function aktualizuj_post($id, $tytul = '', $tresc = '', $lead = '')
+    {
+        $set = array();
+        if($tytul != '')
+        {
+            $set['tytul'] = $tytul;
+        }
+        if($tresc != '')
+        {
+            $set['tresc'] = $tresc;
+        }
+        if($lead != '')
+        {
+            $set['lead'] = $lead;
+        }
+        $this->db->where('id', $id);
+        $this->db->update('posty', $set);
+        if($this->db->affected_rows() > 0)
+        {
+            return TRUE;
+        }
+        else
+        {
+            return FALSE;
+        }
+        
     }
     public function dodaj_post($tytul, $tresc, $autor, $data_dodania, $lead, $post_url = FALSE)
     {

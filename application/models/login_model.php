@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
-* Description of blog
+* Description of login_model
 * @property CI_DB_active_record $db
 * @property CI_DB_forge $dbforge
 * @property CI_Benchmark $benchmark
@@ -42,55 +42,58 @@
 * @property CI_Zip $zip
 * @property Image_Upload $image_upload
 * @property Lang_Detect $lang_detect
- * @property web_model $web_model
- * @property post_model $post_model
- * @property paginacja_model $paginacja_model Description
 
 ********* MODELS *********
 * @property User_model $user_model
 * 
  * @author Konrad Kosowski
  */
-class blog extends CI_Controller 
+
+class login_model extends CI_Model 
 {
-    
-    public function index($id = NULL)
+    public function login_model() 
     {
-        
-        $data = $this->show_top($id);
-        $data['posty'] = $this->post_model->pobierz_posty($id, $data['konfiguracja']['show_per_page']);
-        $this->load->view('blog_view', $data);
+        parent::__construct();
     }
     
-    
-    public function show_top($id)
+    public function create_user($login, $password)
     {
-        $this->load->model('web_model', '', TRUE);
-        $this->load->model('post_model', '', TRUE);
-        $this->load->model('paginacja_model', '', TRUE);
-        $data['konfiguracja'] = $this->web_model->pobierz_konfiguracje();
-        $data['title'] = $data['konfiguracja']['header'];
-        $data['konfiguracja']['paginacja'] = $this->paginacja_model->przygotuj_linki();
-        if($this->session->userdata('username'))
+        $set = array('login' => $login,
+            'hash' => password_hash($password, PASSWORD_BCRYPT),
+            'level' => 1,
+            'active' => 1
+            );
+        $this->db->insert('users', $set);
+        if($this->db->affected_rows() > 0)
         {
-            $data['is_logged'] = TRUE;
-            $data['name'] = $this->session->userdata('username');
-            $data['level'] = $this->session->userdata('level');
+            return TRUE;
         }
-        else
+        return FALSE;
+    }
+    
+    public function auth($username, $password)
+    {
+        $this->db->select('id, level, login, hash');
+        $this->db->from('users');
+        $this->db->where('login', $username);
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
         {
-            $data['name'] = 'nieznajomy';
-            $data['is_logged'] = FALSE;
+            foreach($query->result() as $result)
+            {
+                $row = $result;
+            }
+            if(password_verify($password, $row->hash))
+            {
+                return $row;
+            }
+            else
+            {
+                return FALSE;
+            }
         }
-        
-        
-        $this->load->view('head_view', $data);
-        $this->load->view('log_tab_view', $data);
-        $this->load->view('login_dialog');
-        $this->load->view('register_dialog');
-        $this->load->view('header_view', $data);
-        return $data;
+        return FALSE;
     }
 }
-/* End of file blog.php */
-/* Location: ./application/controllers/blog.php */
+/* End of file login_model.php */
+/* Location: ./application/models/login_model.php */
